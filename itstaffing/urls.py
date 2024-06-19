@@ -20,6 +20,6 @@ from django.urls import path
 from staff.views import HomePageView
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', HomePageView.as_view())
+    path('admin/', admin.site.urls, name='admin'),
+    path('', HomePageView.as_view(), name='home')
 ]
