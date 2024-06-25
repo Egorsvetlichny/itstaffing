@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import dj_database_url
 from pathlib import Path
-from secrets import DATABASE_PASSWORD, SECRET_KEY
+from secrets import DATABASE_URL, SECRET_KEY
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -77,7 +77,7 @@ WSGI_APPLICATION = 'itstaffing.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"mysql://itstaffing_user:{DATABASE_PASSWORD}@127.0.0.1:3306/db_itstaffing",
+        default=DATABASE_URL,
         conn_max_age=600,
     )
 }
