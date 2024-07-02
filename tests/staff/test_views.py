@@ -1,3 +1,5 @@
+# Тесты представлений.
+
 from django.test import TestCase
 import unittest
 from unittest.mock import patch
