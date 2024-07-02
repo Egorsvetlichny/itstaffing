@@ -1,4 +1,8 @@
+import logging
+
 from django.views.generic import TemplateView
+
+logger = logging.getLogger(__name__)
 
 
 class HomePageView(TemplateView):
@@ -15,3 +19,7 @@ class HomePageView(TemplateView):
         context['title'] = 'Главная страница'
         context['body'] = 'Содержимое главной страницы'
         return context
+
+    def dispatch(self, request, *args, **kwargs):
+        logger.info('HomePageView is being accessed')
+        return super().dispatch(request, *args, **kwargs)
