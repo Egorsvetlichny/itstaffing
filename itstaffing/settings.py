@@ -155,10 +155,17 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'simple'
         },
-        'file': {
+        'debug_file': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'itstaffing.log',
+            'filename': 'logs/debug.log',
+            'formatter': 'verbose',
+            'mode': 'w'
+        },
+        'warning_error_file': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/warning_error.log',
             'formatter': 'verbose',
             'mode': 'w'
         },
@@ -166,12 +173,12 @@ LOGGING = {
 
     'loggers': {
         'django': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console', 'debug_file', 'warning_error_file'],
             'level': 'INFO',
             'propagate': True,
         },
         'staff': {
-            'handlers': ['console', 'file'],
+            'handlers': ['console', 'debug_file', 'warning_error_file'],
             'level': 'DEBUG',
             'propagate': True,
         },
