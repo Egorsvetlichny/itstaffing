@@ -24,3 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls, name='admin'),
     path('', HomePageView.as_view(), name='home')
 ]
+
+admin.site.site_header = 'Панель администрирования IT Staffing'
+admin.site.index_title = 'Таблицы базы данных IT Staffing'
+# Изменить ещё название вкладки для админки
