@@ -29,7 +29,3 @@ urlpatterns = [
 
 if not settings.TESTING:
     urlpatterns = [*urlpatterns, ] + debug_toolbar_urls()
-
-# Заголовки для админки
-admin.site.site_header = 'Панель администрирования IT Staffing'
-admin.site.index_title = 'Приложения и таблицы БД'
