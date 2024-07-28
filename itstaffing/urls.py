@@ -14,16 +14,21 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf import settings
 from django.contrib import admin
-from django.urls import path
-from django.conf.urls import include
+from django.urls import path, include
 from staff.views import HomePageView
+from debug_toolbar.toolbar import debug_toolbar_urls
 
 urlpatterns = [
     path('grappelli/', include('grappelli.urls')),
     path('admin/', admin.site.urls, name='admin'),
+    path('staff/', include('staff.urls')),
     path('', HomePageView.as_view(), name='home')
 ]
+
+if not settings.TESTING:
+    urlpatterns = [*urlpatterns, ] + debug_toolbar_urls()
 
 # Заголовки для админки
 admin.site.site_header = 'Панель администрирования IT Staffing'

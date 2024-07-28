@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.2/ref/settings/
 """
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -30,6 +31,7 @@ DEBUG = os.environ.get('DEBUG')
 ALLOWED_HOSTS = ['127.0.0.1']
 
 # Application definition
+TESTING = "test" in sys.argv
 
 INSTALLED_APPS = [
     'grappelli',
@@ -52,6 +54,16 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
+if not TESTING:
+    INSTALLED_APPS = [
+        *INSTALLED_APPS,
+        "debug_toolbar",
+    ]
+    MIDDLEWARE = [
+        "debug_toolbar.middleware.DebugToolbarMiddleware",
+        *MIDDLEWARE,
+    ]
+
 ROOT_URLCONF = 'itstaffing.urls'
 
 TEMPLATES = [
@@ -72,6 +84,10 @@ TEMPLATES = [
             ],
         },
     },
+]
+
+INTERNAL_IPS = [
+    '127.0.0.1',
 ]
 
 WSGI_APPLICATION = 'itstaffing.wsgi.application'
