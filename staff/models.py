@@ -6,7 +6,8 @@ from django.utils.translation import gettext_lazy as _
 class Company(models.Model):
     name = models.CharField(max_length=255, unique=True, db_index=True, verbose_name='Компания')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='Слаг')
-    email = models.EmailField(max_length=255, unique=True, verbose_name='Почтовый ящик')
+    email = models.EmailField(max_length=255, db_index=True, unique=True, verbose_name='Почтовый ящик')
+    phone = models.CharField(max_length=20, db_index=True, unique=True, verbose_name='Телефон')
     website_url = models.URLField(max_length=255, unique=True, blank=True, verbose_name='Веб-сайт')
     industry = models.CharField(max_length=255, blank=True, verbose_name='Сфера')
     location = models.CharField(max_length=255, blank=True, verbose_name='Расположение')
@@ -25,6 +26,13 @@ class Company(models.Model):
 
 
 class Vacancy(models.Model):
+    class TypeOfEmployment(models.TextChoices):
+        FULL_TIME = 'Full_time', _('Полная занятость')
+        PART_TIME = 'Part_time', _('Частичная занятость')
+        CONTRACT = 'Contract', _('Контракт')
+        INTERNSHIP = 'Internship', _('Стажировка')
+        SHIFT_WORK = 'Shift_work', _('Вахтовый метод')
+
     title = models.CharField(max_length=255, db_index=True, verbose_name='Вакансия')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='Слаг')
     speciality = models.CharField(max_length=255, verbose_name='Специальность')
@@ -32,13 +40,14 @@ class Vacancy(models.Model):
     company = models.ForeignKey(Company, on_delete=models.PROTECT, verbose_name='Компания')
     location = models.CharField(max_length=255, blank=True, verbose_name='Расположение')
     salary = models.IntegerField(blank=True, verbose_name='Зарплата')
-    published_date = models.DateTimeField(auto_now_add=True, verbose_name='Дата публикации')
+    publish_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата публикации')
     benefits = models.TextField(blank=True, verbose_name='Преимущества')
-    skills = models.JSONField(blank=True, verbose_name='Необходимые навыки')
-    type_of_employment = models.CharField(max_length=255, blank=True, verbose_name='Вид трудоустройства')
+    skills = models.JSONField(blank=True, verbose_name='Требуемые навыки')
+    type_of_employment = models.CharField(max_length=20, choices=TypeOfEmployment.choices,
+                                          default=TypeOfEmployment.FULL_TIME, verbose_name='Вид трудоустройства')
     url_for_vacancy = models.URLField(max_length=255, blank=True, unique=True, verbose_name='Ссылка на вакансию')
-    contact_email = models.EmailField(max_length=255, unique=True, verbose_name='Контактный email')
-    contact_phone = models.CharField(max_length=255, unique=True, verbose_name='Контактный телефон')
+    contact_email = models.EmailField(max_length=255, db_index=True, unique=True, verbose_name='Контактный email')
+    contact_phone = models.CharField(max_length=20, db_index=True, unique=True, verbose_name='Контактный телефон')
     logo_of_vacancy = models.ImageField(upload_to='logos', blank=True, unique=True, verbose_name='Лого')
     logo_of_vacancy_small = models.ImageField(upload_to='logos', blank=True, unique=True, verbose_name='Миниатюра лого')
 

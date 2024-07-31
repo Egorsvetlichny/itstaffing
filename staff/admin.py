@@ -14,7 +14,7 @@ class CompanyAdmin(admin.ModelAdmin):
 @admin.register(Vacancy)
 class VacancyAdmin(admin.ModelAdmin):
     list_display = ('id', 'title', 'slug', 'speciality', 'description', 'company', 'location', 'salary',
-                    'published_date', 'benefits', 'skills', 'type_of_employment', 'url_for_vacancy', 'contact_email',
+                    'publish_date', 'benefits', 'skills', 'type_of_employment', 'url_for_vacancy', 'contact_email',
                     'contact_phone', 'logo_of_vacancy', 'logo_of_vacancy_small',)
     list_display_links = ('id', 'title',)
     list_per_page = 6
