@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from staff.models import Company, Vacancy, User, ResponseToVacancy
+from staff.models import Company, Vacancy, JobApplicant, ResponseToVacancy
 
 
 @admin.register(Company)
@@ -20,17 +20,17 @@ class VacancyAdmin(admin.ModelAdmin):
     list_per_page = 6
 
 
-@admin.register(User)
-class VacancyAdmin(admin.ModelAdmin):
+@admin.register(JobApplicant)
+class JobApplicantAdmin(admin.ModelAdmin):
     list_display = ('id',)
     list_display_links = ('id',)
     list_per_page = 6
 
 
 @admin.register(ResponseToVacancy)
-class VacancyAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'vacancy', 'status', 'cover_letter', 'send_date', 'response_date',)
-    list_display_links = ('id', 'user', 'vacancy',)
+class ResponseToVacancyAdmin(admin.ModelAdmin):
+    list_display = ('id', 'job_applicant', 'vacancy', 'status', 'cover_letter', 'send_date', 'response_date',)
+    list_display_links = ('id', 'job_applicant', 'vacancy',)
     list_per_page = 6
 
 

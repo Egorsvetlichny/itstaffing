@@ -61,10 +61,10 @@ class Vacancy(models.Model):
         return reverse('vacancy', kwargs={'slug': self.slug})
 
 
-class User(models.Model):
+class JobApplicant(models.Model):
     class Meta:
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'
+        verbose_name = 'Соискатель'
+        verbose_name_plural = 'Соискатели'
 
 
 class ResponseToVacancy(models.Model):
@@ -74,7 +74,7 @@ class ResponseToVacancy(models.Model):
         REJECTED = 'Rejected', _('Отказ')
         OFFERED = 'Offered', _('Оффер')
 
-    user = models.ForeignKey(User, on_delete=models.PROTECT, db_index=True, verbose_name='Пользователь')
+    job_applicant = models.ForeignKey(JobApplicant, on_delete=models.PROTECT, db_index=True, verbose_name='Соискатель')
     vacancy = models.ForeignKey(Vacancy, on_delete=models.PROTECT, db_index=True, verbose_name='Вакансия')
     status = models.CharField(max_length=15, choices=Status.choices, default=Status.APPLIED,
                               verbose_name='Статус отклика')
@@ -86,4 +86,4 @@ class ResponseToVacancy(models.Model):
         verbose_name = 'Отклик'
         verbose_name_plural = 'Отклики'
 
-    def __str__(self): return f'Пользователь - {self.user}, вакансия - {self.vacancy}'
+    def __str__(self): return f'Соискатель - {self.job_applicant}, вакансия - {self.vacancy}'
