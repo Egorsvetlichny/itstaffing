@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from django.utils.translation import gettext_lazy as _
 
 
 class Company(models.Model):
@@ -49,3 +50,31 @@ class Vacancy(models.Model):
 
     def get_absolute_url(self):
         return reverse('vacancy', kwargs={'slug': self.slug})
+
+
+class User(models.Model):
+    class Meta:
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
+
+class ResponseToVacancy(models.Model):
+    class Status(models.TextChoices):
+        APPLIED = 'Applied', _('На рассмотрении')
+        INTERVIEW = 'Interview', _('Собеседование')
+        REJECTED = 'Rejected', _('Отказ')
+        OFFERED = 'Offered', _('Оффер')
+
+    user = models.ForeignKey(User, on_delete=models.PROTECT, db_index=True, verbose_name='Пользователь')
+    vacancy = models.ForeignKey(Vacancy, on_delete=models.PROTECT, db_index=True, verbose_name='Вакансия')
+    status = models.CharField(max_length=15, choices=Status.choices, default=Status.APPLIED,
+                              verbose_name='Статус отклика')
+    cover_letter = models.TextField(blank=True, verbose_name='Сопроводительное письмо')
+    send_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата отклика')
+    response_date = models.DateTimeField(auto_now=True, verbose_name='Дата ответа на отклик')
+
+    class Meta:
+        verbose_name = 'Отклик'
+        verbose_name_plural = 'Отклики'
+
+    def __str__(self): return f'Пользователь - {self.user}, вакансия - {self.vacancy}'
