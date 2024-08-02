@@ -62,9 +62,28 @@ class Vacancy(models.Model):
 
 
 class JobApplicant(models.Model):
+    username = models.CharField(max_length=255, unique=True, db_index=True, verbose_name='Имя пользователя')
+    password = models.CharField(max_length=255, verbose_name='Пароль')
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='Слаг')
+    applicant_info = models.OneToOneField('ApplicantInfo', on_delete=models.CASCADE, verbose_name='Соискатель')
+    is_admin = models.BooleanField(default=False, verbose_name='Администратор')
+    date_join = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата регистрации')
+    resume_url = models.URLField(max_length=255, blank=True, unique=True, verbose_name='Резюме')
+    profile_picture = models.ImageField(upload_to='profiles', blank=True, verbose_name='Фото профиля')
+    github_profile = models.URLField(max_length=255, blank=True, unique=True, verbose_name='GitHub аккаунт')
+    skills = models.JSONField(blank=True, verbose_name='Навыки')
+    desired_position = models.CharField(max_length=255, blank=True, verbose_name='Желаемая позиция')
+    desired_salary = models.IntegerField(blank=True, verbose_name='Желаемая ЗП')
+    desired_location = models.CharField(max_length=255, blank=True, verbose_name='Желаемая локация')
+
     class Meta:
         verbose_name = 'Соискатель'
         verbose_name_plural = 'Соискатели'
+
+    def __str__(self): return self.username
+
+    def get_absolute_url(self):
+        return reverse('applicant', kwargs={'slug': self.slug})
 
 
 class ResponseToVacancy(models.Model):
@@ -87,3 +106,21 @@ class ResponseToVacancy(models.Model):
         verbose_name_plural = 'Отклики'
 
     def __str__(self): return f'Соискатель - {self.job_applicant}, вакансия - {self.vacancy}'
+
+
+class ApplicantInfo(models.Model):
+    first_name = models.CharField(max_length=255, db_index=True, verbose_name='Имя')
+    last_name = models.CharField(max_length=255, db_index=True, verbose_name='Фамилия')
+    email = models.EmailField(max_length=255, db_index=True, unique=True, verbose_name='Email')
+    phone_number = models.CharField(max_length=20, unique=True, verbose_name='Телефон')
+    telegram = models.CharField(max_length=255, blank=True, verbose_name='Telegram')
+    whatsapp = models.CharField(max_length=255, blank=True, verbose_name='WhatsApp')
+    birthday = models.DateField(verbose_name='Дата рождения')
+    location = models.CharField(max_length=255, blank=True, verbose_name='Расположение')
+    about = models.TextField(blank=True, verbose_name='О себе')
+
+    class Meta:
+        verbose_name = 'Информация о соискателе'
+        verbose_name_plural = 'Информация о соискателях'
+
+    # def __str__(self): return self.username
