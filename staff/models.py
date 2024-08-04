@@ -52,8 +52,6 @@ class Vacancy(models.Model):
     contact_phone = models.CharField(max_length=20, db_index=True, unique=True, verbose_name='Контактный телефон')
     logo_of_vacancy = models.ImageField(upload_to='logos', blank=True, unique=True, verbose_name='Лого')
     logo_of_vacancy_small = models.ImageField(upload_to='logos', blank=True, unique=True, verbose_name='Миниатюра лого')
-    vacancy_statistic = models.OneToOneField('VacancyStatistic', on_delete=models.CASCADE,
-                                             verbose_name='Статистика вакансии')
 
     class Meta:
         verbose_name = 'Вакансия'
@@ -134,6 +132,8 @@ class ApplicantInfo(models.Model):
 
 
 class VacancyStatistic(models.Model):
+    # Поставить на вакансию primary key и изменить отображаемые поля в админке
+    vacancy = models.OneToOneField(Vacancy, on_delete=models.CASCADE, related_name='statistic', verbose_name='Вакансия')
     title = models.CharField(max_length=255, db_index=True, verbose_name='Название вакансии')
     vacancy_views = models.IntegerField(default=0, verbose_name='Количество просмотров вакансии')
     number_of_resp = models.IntegerField(default=0, verbose_name='Количество откликов')
