@@ -37,7 +37,9 @@ class Vacancy(models.Model):
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='Слаг')
     speciality = models.CharField(max_length=255, verbose_name='Специальность')
     description = models.TextField(blank=True, verbose_name='Описание вакансии')
-    company = models.ForeignKey(Company, on_delete=models.PROTECT, verbose_name='Компания')
+    company = models.ForeignKey(Company, on_delete=models.PROTECT, related_name='vacancies', verbose_name='Компания')
+    keywords = models.ManyToManyField('Keyword', blank=True, related_name='vacancies',
+                                      verbose_name='Ключевые слова')
     location = models.CharField(max_length=255, blank=True, verbose_name='Расположение')
     salary = models.IntegerField(blank=True, verbose_name='Зарплата')
     publish_date = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата публикации')
@@ -68,7 +70,8 @@ class JobApplicant(models.Model):
     password = models.CharField(max_length=255, verbose_name='Пароль')
     slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name='Слаг')
     applicant_info = models.OneToOneField('ApplicantInfo', on_delete=models.CASCADE, verbose_name='Соискатель')
-    is_admin = models.BooleanField(default=False, verbose_name='Администратор')
+    keywords = models.ManyToManyField('Keyword', blank=True, related_name='applicants',
+                                      verbose_name='Ключевые слова')
     date_join = models.DateTimeField(auto_now_add=True, db_index=True, verbose_name='Дата регистрации')
     resume_url = models.URLField(max_length=255, blank=True, unique=True, verbose_name='Резюме')
     profile_picture = models.ImageField(upload_to='profiles', blank=True, verbose_name='Фото профиля')
@@ -95,8 +98,10 @@ class ResponseToVacancy(models.Model):
         REJECTED = 'Rejected', _('Отказ')
         OFFERED = 'Offered', _('Оффер')
 
-    job_applicant = models.ForeignKey(JobApplicant, on_delete=models.PROTECT, db_index=True, verbose_name='Соискатель')
-    vacancy = models.ForeignKey(Vacancy, on_delete=models.PROTECT, db_index=True, verbose_name='Вакансия')
+    job_applicant = models.ForeignKey(JobApplicant, on_delete=models.PROTECT, db_index=True, related_name='responses',
+                                      verbose_name='Соискатель')
+    vacancy = models.ForeignKey(Vacancy, on_delete=models.PROTECT, db_index=True, related_name='responses',
+                                verbose_name='Вакансия')
     status = models.CharField(max_length=15, choices=Status.choices, default=Status.APPLIED,
                               verbose_name='Статус отклика')
     cover_letter = models.TextField(blank=True, verbose_name='Сопроводительное письмо')
@@ -139,3 +144,22 @@ class VacancyStatistic(models.Model):
         verbose_name_plural = 'Статистика вакансий'
 
     def __str__(self): return self.title
+
+
+class Keyword(models.Model):
+    class TypeChoice(models.TextChoices):
+        SKILL = 'Skill', _('Навык')
+        TECHNOLOGY = 'Technology', _('Технология')
+        POSITION = 'Position', _('Должность')
+        INDUSTRY = 'Industry', _('Индустрия')
+        PRIVILEGE = 'Privilege', _('Привилегия')
+
+    name = models.CharField(max_length=255, db_index=True, verbose_name='Ключевое слово')
+    type = models.CharField(max_length=11, choices=TypeChoice.choices, default=TypeChoice.SKILL,
+                            verbose_name='Тип ключевого слова')
+
+    class Meta:
+        verbose_name = 'Ключевое слово'
+        verbose_name_plural = 'Ключевые слова'
+
+    def __str__(self): return self.name
